@@ -1,46 +1,56 @@
 import java.util.Arrays;
-import java.util.EmptyStackException;
 
 public class PriorityQueue {
-    int[] items = new int[5];
-    int count ;
-    int front;
+    private int[] queue;
+    private int count;
 
-    void insert(int item){
+    public PriorityQueue(int capacity) {
+        queue = new int[capacity];
+        count = 0;
+    }
 
-        if (isFull()) throw new IllegalStateException();
-
-        var i = shiftItemsToInsert(item);
-                items[i] = item;
+    public void enqueue(int item) {
+        if (isFull())
+            throw new IllegalStateException();
+        var i = shiftInsert(item);
+        queue[i + 1] = item;
         count++;
-        }
+    }
 
-        public int delete(){
+    private int shiftInsert(int item) {
+        int i;
+        for (i = count - 1; i >= 0; i--) {
+            if (queue[i] > item)
+                queue[i + 1] = queue[i];
+            else
+                break;
+        }
+        return i;
+    }
+
+    public int dequeue() {
         if (isEmpty())
-            throw new EmptyStackException();
-
-        return items[--count];
-        }
-
-  public int shiftItemsToInsert(int item) {
-      int i;
-      for (i = count - 1; i >= 0; i--) {
-      if (isEmpty()) items[i] = item;
-      else if (items[i] > item) items[i + 1] = items[i];
-      else break;
+            throw new IllegalStateException();
+        return queue[--count];
     }
-    return i + 1;
-    }
-        @Override
-    public String toString(){
-        return Arrays.toString(items);
-        }
 
-    boolean isEmpty(){
+    public int peek() {
+        if (isEmpty())
+            throw new IllegalStateException();
+
+        return queue[--count];
+    }
+
+    @Override
+    public String toString() {
+        return Arrays.toString(queue);
+    }
+
+    public boolean isEmpty() {
         return count == 0;
     }
 
-    boolean isFull(){
-        return count == items.length;
+    public boolean isFull() {
+        return count == queue.length;
     }
 }
